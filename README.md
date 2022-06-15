@@ -1,7 +1,5 @@
 # ts-import-transformer
 
-TypeScript tranformer to turn package imports into a relative path.
-
 ## Purpose
 
 Use this tranformer to change package imports to relative asset paths (usually for client builds).
