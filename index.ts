@@ -13,6 +13,7 @@ export default function transformPaths(
   program: ts.Program,
   config: Record<string, string> = {}
 ) {
+  const outDir = program.getCompilerOptions().outDir
   const cwd = program.getCurrentDirectory()
 
   const regex = new RegExp(
@@ -32,7 +33,7 @@ export default function transformPaths(
           }
   
           if (match && match[1]) {
-            const path = join(cwd, config[match[1]])
+            const path = join(cwd, outDir, config[match[1]])
             const relPath = relative(dirname(sf.fileName), path)
 
             return context.factory.createImportDeclaration(
