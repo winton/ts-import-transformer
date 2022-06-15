@@ -13,7 +13,7 @@ export default function transformPaths(
   program: ts.Program,
   config: Record<string, string> = {}
 ) {
-  const outDir = program.getCompilerOptions().outDir
+  const outDir = program.getCompilerOptions().outDir || "."
   const cwd = program.getCurrentDirectory()
 
   const regex = new RegExp(
