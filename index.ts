@@ -13,8 +13,10 @@ export default function transformPaths(
   program: ts.Program,
   config: Record<string, string> = {}
 ) {
-  const outDir = program.getCompilerOptions().outDir || "."
+  const compilerOptions = program.getCompilerOptions()
   const cwd = program.getCurrentDirectory()
+  const outDir = compilerOptions.outDir || "."
+  const srcDir = join(cwd, compilerOptions.baseUrl || ".")
   const outDirToCwd = relative(outDir, cwd)
 
   const regex = new RegExp(
@@ -34,10 +36,8 @@ export default function transformPaths(
           }
   
           if (match && match[1]) {
-            const pathToCwd = relative(dirname(sf.fileName), cwd)
-            console.log(pathToCwd, outDirToCwd, config[match[1]])
-            const relPath = join(pathToCwd, outDirToCwd, config[match[1]])
-            console.log(relPath)
+            const pathToSrc = relative(dirname(sf.fileName), srcDir)
+            const relPath = join(pathToSrc, outDirToCwd, config[match[1]])
 
             return context.factory.createImportDeclaration(
               node.decorators,

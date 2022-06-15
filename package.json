@@ -17,8 +17,8 @@
   "homepage": "https://github.com/winton/ts-import-transformer",
   "main": "index.js",
   "files": [
-    "*.js",
-    "*.md",
+    "index.js",
+    "README.md",
     "package.json"
   ],
   "keywords": [
