@@ -15,7 +15,7 @@
     "url": "https://github.com/winton/ts-import-transformer/issues"
   },
   "homepage": "https://github.com/winton/ts-import-transformer",
-  "main": "index.js",
+  "main": "./build/src/index.js",
   "files": [
     "build/src/index.js",
     "README.md",
