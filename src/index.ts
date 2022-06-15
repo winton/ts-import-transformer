@@ -16,7 +16,7 @@ export default function transformPaths(
   const compilerOptions = program.getCompilerOptions()
   const cwd = program.getCurrentDirectory()
   const outDir = compilerOptions.outDir || "."
-  const srcDir = join(cwd, compilerOptions.baseUrl || ".")
+  const srcDir = compilerOptions.baseUrl || "."
   const outDirToCwd = relative(outDir, cwd)
 
   const regex = new RegExp(

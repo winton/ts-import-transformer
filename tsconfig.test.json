@@ -2,10 +2,11 @@
   "extends": "./tsconfig.base.json",
   "include": ["./test/test.ts"],
   "compilerOptions": {
+    "baseUrl": "./test",
     "outDir": "./build/test",
     "plugins": [
       {
-        "transform": "./index.js",
+        "transform": "./build/src/index.js",
         "path": "./assets/path"
       }
     ]
