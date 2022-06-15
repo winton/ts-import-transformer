@@ -4,9 +4,9 @@ TypeScript tranformer to turn package imports into a relative path.
 
 ## Purpose
 
-Sometimes you have TypeScript code that you intend to build for both client and server that depends on a package.
+Sometimes you have TypeScript code that you intend to build for the client that also depends on a `node_modules` package.
 
-When building for the client, you'll want to change the import to point to a relative path.
+Use this tranformer to change the package import to a relative asset path.
 
 ## Install
 
