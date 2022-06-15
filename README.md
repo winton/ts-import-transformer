@@ -14,18 +14,20 @@ When building for the client, you'll want to change the import to point to a rel
 npm install --save-dev typescript ttypescript ts-import-transformer
 ```
 
-## `tsconfig.client.json`
+## Config
+
+### `tsconfig.client.json`
 
 ```json
 {
-	"compilerOptions": {
-		"plugins": [
-			{
-				"transform": "ts-import-transformer",
-				"superstruct": "./assets/superstruct/index"
-			}
-		]
-	},
+  "compilerOptions": {
+    "plugins": [
+      {
+        "transform": "ts-import-transformer",
+        "superstruct": "./assets/superstruct/index"
+      }
+    ]
+  }
 }
 ```
 
