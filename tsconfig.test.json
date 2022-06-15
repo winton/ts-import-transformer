@@ -1,7 +1,8 @@
 {
   "extends": "./tsconfig.base.json",
-  "include": ["./test.ts"],
+  "include": ["./test/test.ts"],
   "compilerOptions": {
+    "outDir": "./build/test",
     "plugins": [
       {
         "transform": "./index.js",
