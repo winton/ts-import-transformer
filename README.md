@@ -4,9 +4,9 @@ TypeScript tranformer to turn package imports into a relative path.
 
 ## Purpose
 
-Sometimes you have TypeScript code that you intend to build for client and server.
+Sometimes you have TypeScript code that you intend to build for both client and server that depends on a package.
 
-If that code depends on a package, you'll want to change the import to point to a relative path.
+When building for the client, you'll want to change the import to point to a relative path.
 
 ## Install
 
@@ -14,7 +14,7 @@ If that code depends on a package, you'll want to change the import to point to 
 npm install --save-dev typescript ttypescript ts-import-transformer
 ```
 
-## TS config
+## `tsconfig.client.json`
 
 ```json
 {
@@ -32,5 +32,5 @@ npm install --save-dev typescript ttypescript ts-import-transformer
 ## Compile
 
 ```bash
-npx ttsc -p tsconfig.json
+npx ttsc -p tsconfig.client.json
 ```
