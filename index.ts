@@ -23,7 +23,13 @@ export default function transformPaths(
     return (sf: ts.SourceFile) => {
       const visitor = (node: ts.Node): ts.Node => {
         if (ts.isImportDeclaration(node)) {
-          const match = node.moduleSpecifier.getText().match(regex)
+          let match: RegExpMatchArray | null
+
+          try {
+            match = node.moduleSpecifier.getText().match(regex)
+          } catch (e) {
+            return node
+          }
   
           if (match && match[1]) {
             const path = join(cwd, config[match[1]])
