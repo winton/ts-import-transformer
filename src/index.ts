@@ -60,14 +60,13 @@ export default function transformPaths(
       path = relPath[0] === "." ? relPath : `./${relPath}`
     }
 
-    if (!path.endsWith(".js")) {
-      path += ".js"
-    }
+    const pathWithoutExt = path.replace(/\.[a-zA-Z]+$/, "")
 
-    if (path[0] !== "." && pathExists(join(srcDir, path.replace(/\.[a-zA-Z]+$/, ".ts")))) {
+    if (path[0] !== "." && pathExists(join(srcDir, pathWithoutExt + ".ts"))) {
       const pathToSrc = relative(dirname(fileName), srcDir)
-      const relPath = join(pathToSrc, path)
+      const relPath = join(pathToSrc, pathWithoutExt)
       path = relPath[0] === "." ? relPath : `./${relPath}`
+      path += ".js"
     }
 
     return path !== ogPath ? path : undefined
