@@ -44,31 +44,29 @@ export default function transformPaths(
     const ogPath = path
     const innerQuoteMatch = path.match(innerQuoteRegex)
 
-    let replaceMatch: RegExpMatchArray | null = null
-    
     if (innerQuoteMatch && innerQuoteMatch[1]) {
       path = innerQuoteMatch[1]
     } else {
       return
     }
 
-    replaceMatch = path.match(replaceRegex)
+    const replaceMatch = path.match(replaceRegex)
 
     if (replaceMatch && replaceMatch[1]) {
       const pathToSrc = relative(dirname(fileName), srcDir)
       const relPath = join(pathToSrc, outDirToCwd, config[replaceMatch[1]])
       path = relPath[0] === "." ? relPath : `./${relPath}`
-    }
+    } else {
+      const pathWithoutExt = path.replace(/\.[a-zA-Z]+$/, "")
 
-    const pathWithoutExt = path.replace(/\.[a-zA-Z]+$/, "")
-
-    if (path[0] !== "." && pathExists(join(srcDir, pathWithoutExt + ".ts"))) {
-      const pathToSrc = relative(dirname(fileName), srcDir)
-      const relPath = join(pathToSrc, pathWithoutExt)
-      path = relPath[0] === "." ? relPath : `./${relPath}`
-      path += ".js"
-    } else if (path[0] === ".") {
-      path += ".js"
+      if (path[0] !== "." && pathExists(join(srcDir, pathWithoutExt + ".ts"))) {
+        const pathToSrc = relative(dirname(fileName), srcDir)
+        const relPath = join(pathToSrc, pathWithoutExt)
+        path = relPath[0] === "." ? relPath : `./${relPath}`
+        path += ".js"
+      } else if (path[0] === ".") {
+        path = pathWithoutExt + ".js"
+      }
     }
 
     return path !== ogPath ? path : undefined
