@@ -1,3 +1,4 @@
+import { lstatSync } from "fs"
 import { dirname, join, relative } from "path"
 import ts from "typescript"
 
@@ -7,6 +8,20 @@ export type ExtractElement<T> =
 export type CustomTransformer = {
   [Key in keyof ts.CustomTransformers]:
     ExtractElement<ts.CustomTransformers[Key]>
+}
+
+const pathCache: Record<string, boolean> = {}
+
+export function pathExists(path: string) {
+  if (pathCache[path] !== undefined) {
+    return pathCache[path]
+  }
+
+  try {
+    return pathCache[path] = (lstatSync(path)).isFile()
+  } catch (e) {
+    return pathCache[path] = false
+  }
 }
 
 export default function transformPaths(
@@ -19,27 +34,40 @@ export default function transformPaths(
   const srcDir = compilerOptions.baseUrl || "."
   const outDirToCwd = relative(outDir, cwd)
 
-  const regex = new RegExp(
-    `^["'](${Object.keys(config).join("|")})["']$`
+  const replaceRegex = new RegExp(
+    `^(${Object.keys(config).join("|")})$`
   )
 
+  const innerQuoteRegex = /^["'](.+)["']$/
+
   function transformPath(path: string, fileName: string) {
-    let match: RegExpMatchArray | null = null
-
     const ogPath = path
+    const innerQuoteMatch = path.match(innerQuoteRegex)
 
-    try {
-      match = path.match(regex)
-    } catch (e) {}
+    let replaceMatch: RegExpMatchArray | null = null
+    
+    if (innerQuoteMatch && innerQuoteMatch[1]) {
+      path = innerQuoteMatch[1]
+    } else {
+      return
+    }
 
-    if (match && match[1]) {
+    replaceMatch = path.match(replaceRegex)
+
+    if (replaceMatch && replaceMatch[1]) {
       const pathToSrc = relative(dirname(fileName), srcDir)
-      const relPath = join(pathToSrc, outDirToCwd, config[match[1]])
+      const relPath = join(pathToSrc, outDirToCwd, config[replaceMatch[1]])
       path = relPath[0] === "." ? relPath : `./${relPath}`
     }
 
     if (!path.endsWith(".js")) {
       path += ".js"
+    }
+
+    if (path[0] !== "." && pathExists(join(srcDir, path.replace(/\.[a-zA-Z]+$/, ".ts")))) {
+      const pathToSrc = relative(dirname(fileName), srcDir)
+      const relPath = join(pathToSrc, path)
+      path = relPath[0] === "." ? relPath : `./${relPath}`
     }
 
     return path !== ogPath ? path : undefined

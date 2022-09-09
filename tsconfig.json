@@ -1,6 +1,6 @@
 {
   "extends": "./tsconfig.base.json",
-  "exclude": ["./test/test.ts"],
+  "exclude": ["./test/**/*"],
   "compilerOptions": {
     "baseUrl": "./src",
     "outDir": "./build/src"
