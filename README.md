@@ -1,8 +1,12 @@
 # ts-import-transformer
 
-## Purpose
+Transform import and export paths to work on client and server environments.
 
-Use this tranformer to change package imports to relative asset paths (usually for client builds).
+## Transforms
+
+* User-configured path replacements
+* Fix `baseUrl` relative paths
+* Add `.js` extension
 
 ## Install
 
@@ -12,7 +16,7 @@ npm install --save-dev typescript ttypescript ts-import-transformer
 
 ## Config
 
-### `tsconfig.client.json`
+In this example, we enable the plugin and configure a path replacement for the `superstruct` library within our `tsconfig.json`:
 
 ```json
 {
@@ -30,5 +34,5 @@ npm install --save-dev typescript ttypescript ts-import-transformer
 ## Compile
 
 ```bash
-npx ttsc -p tsconfig.client.json
+npx ttsc -p tsconfig.json
 ```
