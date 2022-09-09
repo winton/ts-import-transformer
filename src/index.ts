@@ -67,6 +67,8 @@ export default function transformPaths(
       const relPath = join(pathToSrc, pathWithoutExt)
       path = relPath[0] === "." ? relPath : `./${relPath}`
       path += ".js"
+    } else if (path[0] === ".") {
+      path += ".js"
     }
 
     return path !== ogPath ? path : undefined
