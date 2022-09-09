@@ -23,31 +23,61 @@ export default function transformPaths(
     `^["'](${Object.keys(config).join("|")})["']$`
   )
 
+  function transformPath(path: string, fileName: string) {
+    let match: RegExpMatchArray | null = null
+
+    const ogPath = path
+
+    try {
+      match = path.match(regex)
+    } catch (e) {}
+
+    if (match && match[1]) {
+      const pathToSrc = relative(dirname(fileName), srcDir)
+      const relPath = join(pathToSrc, outDirToCwd, config[match[1]])
+      path = relPath[0] === "." ? relPath : `./${relPath}`
+    }
+
+    if (!path.endsWith(".js")) {
+      path += ".js"
+    }
+
+    return path !== ogPath ? path : undefined
+  }
+
   function createTransformer(context: ts.TransformationContext) {
     return (sf: ts.SourceFile) => {
       const visitor = (node: ts.Node): ts.Node => {
         if (ts.isImportDeclaration(node)) {
-          let match: RegExpMatchArray | null
-
-          try {
-            match = node.moduleSpecifier.getText().match(regex)
-          } catch (e) {
-            return node
-          }
-  
-          if (match && match[1]) {
-            const pathToSrc = relative(dirname(sf.fileName), srcDir)
-            const relPath = join(pathToSrc, outDirToCwd, config[match[1]])
-
+          const path = transformPath(node.moduleSpecifier.getText(), sf.fileName)
+            
+          if (path) {
             return context.factory.createImportDeclaration(
               node.decorators,
               node.modifiers,
               node.importClause,
-              context.factory.createStringLiteral(
-                relPath[0] === "." ? relPath : `./${relPath}`
-              ),
+              context.factory.createStringLiteral(path),
               node.assertClause
             )
+          } else {
+            return node
+          }
+        }
+
+        if (ts.isExportDeclaration(node) && node.moduleSpecifier) {
+          const path = transformPath(node.moduleSpecifier.getText(), sf.fileName)
+            
+          if (path) {
+            return context.factory.createExportDeclaration(
+              node.decorators,
+              node.modifiers,
+              node.isTypeOnly,
+              node.exportClause,
+              context.factory.createStringLiteral(path),
+              node.assertClause
+            )
+          } else {
+            return node
           }
         }
   
