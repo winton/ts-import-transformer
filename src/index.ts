@@ -79,7 +79,8 @@ export default function transformPaths(
           const path = transformPath(node.moduleSpecifier.getText(), sf.fileName)
             
           if (path) {
-            return context.factory.createImportDeclaration(
+            return context.factory.updateImportDeclaration(
+              node,
               node.decorators,
               node.modifiers,
               node.importClause,
@@ -116,7 +117,7 @@ export default function transformPaths(
   }
 
   const plugin: CustomTransformer = {
-    before: createTransformer,
+    after: createTransformer,
     afterDeclarations:
       createTransformer as CustomTransformer['afterDeclarations']
   }
